@@ -10,20 +10,20 @@ church n = \f -> \x -> f (church (n-1) f x)
 unchurch :: Church Integer -> Integer
 unchurch cn = cn (+ 1) 0
 
---c0 = \f x -> x
---c1 = \f x -> f x
---c2 = \f x -> f (f x)
-
-{- lsucc(n) = n + 1 -}
+{- lsucc n = n + 1 -}
+lsucc :: Church Integer -> Church Integer
 lsucc = \n f x -> f (n f x)
 
-{- lplus(m, n) = m + n -}
+{- lplus m n = m + n -}
+lplus :: Church Integer -> Church Integer
 lplus = \m n f x -> m f (n f x)
 
-{- lmult(m, n) = m * n -}
+{- lmult m n = m * n -}
+lmult :: Church Integer -> Church Integer
 lmult = \m n f -> m (n f)
 
-{- lexp(m, n) = m ^ n -}
+{- lexp m n = m ^ n -}
+lexp :: Church Integer -> Church Integer
 lexp = \m n -> n m
 
 

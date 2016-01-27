@@ -15,19 +15,22 @@ lsucc :: Church Integer -> Church Integer
 lsucc = \n f x -> f (n f x)
 
 {- lplus m n = m + n -}
-lplus :: Church Integer -> Church Integer
+lplus :: Church Integer -> Church Integer -> Church Integer
 lplus = \m n f x -> m f (n f x)
 
 {- lmult m n = m * n -}
-lmult :: Church Integer -> Church Integer
+lmult :: Church Integer -> Church Integer -> Church Integer
 lmult = \m n f -> m (n f)
 
 {- lexp m n = m ^ n -}
-lexp :: Church Integer -> Church Integer
+--lexp :: Church Integer -> Church Integer -> Church Integer
 lexp = \m n -> n m
 
+{- Booleans -}
+ltrue = \x y -> x
+lfalse = \x y -> y
 
 {- Main -}
 main :: IO ()
-main = do let z = unchurch (lsucc (church 4))
+main = do let z = unchurch (lmult (church 4) (church 2))
           putStrLn $ "The result is: " ++ show z

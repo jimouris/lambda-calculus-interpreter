@@ -1,14 +1,16 @@
-# lambda-calculus-interpreter
-A simple lambda (λ) calculus interpreter
+# λ-Calculus Interpreter
+A simple lambda calculus interpreter
 
-\\\\\\\\\\\\
- \\\\\\\\\\\\
+ \\\\\\\\\\\
+  \\\\\\\\\\\
      \\\\\\\\\
       \\\\\\\\\
        \\\\\\\\\
        /\\\\\\\\\
       ///\\\\\\\\\
      /////\\\\\\\\\
-    ///////\\\\\\\\\
-   ///////  \\\\\\\\\\\\
-  ///////    \\\\\\\\\\\\
+    ///////\\\\\\\\\ 
+   ///////  \\\\Calculus
+  ///////    \\\\Interpreter
+ ///////      \\\\MIT LICENSE
+///////        \\\\2015 - 2016

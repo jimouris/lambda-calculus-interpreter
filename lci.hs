@@ -4,6 +4,7 @@
 {-# LANGUAGE FlexibleInstances #-}
 {-# OPTIONS_GHC -fno-warn-tabs #-}
 
+import System.IO
 import Data.List
 import Data.Char
 import Text.Parsec
@@ -24,31 +25,31 @@ lambdaTerm = lambdaAbstraction <|> lambdaApplication <|> simple
 
 lambdaAbstraction :: Parser Term
 lambdaAbstraction = do
-  	char '\\'
-  	var <- letter
-  	char '.'
-  	body <- lambdaTerm
-  	return(Abstraction [var] body)
+	char '\\'
+	var <- letter
+	char '.'
+	body <- lambdaTerm
+	return(Abstraction [var] body)
 
 lambdaApplication :: Parser Term
 lambdaApplication = do
-  apps <- many1 simple
-  return(foldl1 Application apps)
+	apps <- many1 simple
+	return(foldl1 Application apps)
 
 simple :: Parser Term
 simple = lambdaVar <|> paren
 
 lambdaVar :: Parser Term
 lambdaVar = do
-  var <- letter
-  return(Var [var])
+	var <- letter
+	return(Var [var])
 
 paren :: Parser Term
 paren = do
-  char '('
-  term <- lambdaTerm
-  char ')'
-  return term
+	char '('
+	term <- lambdaTerm
+	char ')'
+	return term
 
 myparse :: String -> Term
 myparse str = case (parse lambdaTerm "" str) of
@@ -74,6 +75,25 @@ parenApp x = ppr x
 
 prettyprint :: Term -> String
 prettyprint term = PP.render (ppr term)
+
+
+-------------------------------------- Main --------------------------------------
+main :: IO ()
+main = do  
+    putStrLn "Type a lambda expression like \"(\\\\x.\\\\y.x)\":"  
+    inputStr <- readLn 
+    let parsedString = myparse inputStr  
+    putStrLn ("Normal form of " ++ inputStr ++ ": " ++ prettyprint parsedString)  
+
+
+-------------------------------------- TEST CASES --------------------------------------
+inputString = "(\\x.\\y.x)(\\z.z)"
+parseInputString = myparse inputString
+myterm = Application (Abstraction "x" ( Abstraction "y"  (Var "x"))) (Abstraction "z" ( Var "z"))
+prettyPrinted = prettyprint myterm
+
+
+
 
 
 ------------------------------------- Church Numerals -------------------------------------
@@ -105,17 +125,3 @@ lmult = \m n f -> m (n f)
 {- Booleans -}
 ltrue = \x y -> x
 lfalse = \x y -> y
-
-{- Main -}
-main :: IO ()
-main = do let z = myparse inputString
-          putStrLn $ "The result is: " ++ show z
-
-
-
--------------------------------------- TEST CASES --------------------------------------
-inputString = "(\\x.\\y.x)(\\z.z)"
-parseInputString = myparse inputString
-myterm = Application (Abstraction "x" ( Abstraction "y"  (Var "x"))) (Abstraction "z" ( Var "z"))
-prettyPrinted = prettyprint myterm
-

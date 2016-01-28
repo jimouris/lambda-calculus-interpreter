@@ -18,6 +18,9 @@ data Term = Var String
 
 data Result = Res Term Int [Term] [String] deriving(Show, Eq)
 
+-- Computes Normal Form --
+reduce :: Term -> Term
+reduce x = x
 
 --------------------------------------- PARSER --------------------------------------------
 lambdaTerm :: Parser Term
@@ -77,7 +80,7 @@ prettyprint :: Term -> String
 prettyprint term = PP.render (ppr term)
 
 
--------------------------------------- Main --------------------------------------
+------------------------------------------- Main ------------------------------------------
 main :: IO ()
 main = do  
     putStrLn "Type a lambda expression like \"(\\\\x.\\\\y.x)\":"  
@@ -86,7 +89,7 @@ main = do
     putStrLn ("Normal form of " ++ inputStr ++ ": " ++ prettyprint parsedString)  
 
 
--------------------------------------- TEST CASES --------------------------------------
+---------------------------------------- TEST CASES ---------------------------------------
 inputString = "(\\x.\\y.x)(\\z.z)"
 parseInputString = myparse inputString
 myterm = Application (Abstraction "x" ( Abstraction "y"  (Var "x"))) (Abstraction "z" ( Var "z"))

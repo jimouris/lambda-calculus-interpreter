@@ -1,4 +1,4 @@
-{- Lambda Calculus Interpreter -}
+------------------------------- Lambda Calculus Interpreter -------------------------------
 
 {-# LANGUAGE TypeSynonymInstances #-}
 {-# LANGUAGE FlexibleInstances #-}

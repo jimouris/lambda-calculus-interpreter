@@ -13,9 +13,9 @@ import qualified Text.PrettyPrint as PP
 data Term = Var String
 		  | Application Term Term
 		  | Abstraction String Term
-		  deriving(Show,Eq)
+		  deriving(Show, Eq)
 
-data Result = Res Term Int [Term] [String] deriving(Show,Eq)
+data Result = Res Term Int [Term] [String] deriving(Show, Eq)
 
 
 --------------------------------------- PARSER --------------------------------------------
@@ -65,7 +65,6 @@ ppr (Var x) = PP.text x
 ppr (Abstraction x e) = PP.fcat [(PP.fcat [PP.text "\\",PP.text x,PP.text "."]),(ppr e)]
 ppr apply = PP.fcat (map parenApp (args apply))
 
-
 args (Application x y) = args x ++ [y]
 args x = [x]
 
@@ -101,7 +100,7 @@ lmult = \m n f -> m (n f)
 
 {- lexp m n = m ^ n -}
 --lexp :: Church Integer -> Church Integer -> Church Integer
-lexp = \m n -> n m
+--lexp = \m n -> n m
 
 {- Booleans -}
 ltrue = \x y -> x
@@ -109,7 +108,7 @@ lfalse = \x y -> y
 
 {- Main -}
 main :: IO ()
-main = do let z = unchurch (lmult (church 4) (church 2))
+main = do let z = myparse inputString
           putStrLn $ "The result is: " ++ show z
 
 

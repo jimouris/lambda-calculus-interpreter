@@ -29,16 +29,17 @@ data Result = Res Term Int [Term] [String] deriving(Show, Eq)
 --freeVars (Application t1 t2) = (freeVars t1 ++ freeVars t2)
 --freeVars (Abstraction s1 t2) = (freeVars t1 ++ freeVars t2)
 
---renameTermVar :: Term -> String -> String -> Term
---renameTermVar (Var s1) s s' = if (s1 == s) then (Var s') else (Var s1)
---renameTermVar (Abstraction s1 t) s s' = (Abstraction s' (renameTermVar t s s')) -- prepei na ginei check oti einai omws free h s1
---renameTermVar (Application t1 t2) s s' = (Application (renameTermVar t1 s s') (renameTermVar t2 s s'))
+-------------------- Rename -----------------------
+renameVarinTerm :: Term -> String -> String -> Term
+renameVarinTerm (Var s1) s s' = if (s1 == s) then (Var s') else (Var s1)
+renameVarinTerm (Abstraction s1 t) s s' = if (s1 == s) then (Abstraction s' (renameVarinTerm t s s')) else (Abstraction s1 (renameVarinTerm t s s'))
+renameVarinTerm (Application t1 t2) s s' = (Application (renameVarinTerm t1 s s') (renameVarinTerm t2 s s'))
 
-----den eiani swsto, giati paizoun malakies me tis fv alla einai mia arxh
---alphaReduce :: Term -> Term
---alphaReduce (Abstraction s t) = (Abstraction s' t') where
---	s' = s ++ "'"
---	t' = renameTermVar t s s'
+------- Alpha reduce applies only to abstraction ------
+alphaReduce :: Term -> Term
+alphaReduce (Abstraction s t) = (Abstraction s' t') where
+	s' = s ++ "'"
+	t' = renameVarinTerm t s s'
 
 reduce :: Term -> Term
 reduce x = x

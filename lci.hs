@@ -19,18 +19,26 @@ data Term = Var String
 data Result = Res Term Int [Term] [String] deriving(Show, Eq)
 
 -- Computes Normal Form --
---freeVars :: Term -> [Var] 
---freeVars t = 
+--memberStr :: String->[String] -> Bool
+--memberStr str [] = False
+--memberStr str (s:strl) = if (s == str) then True else memberStr str strl
 
-renameTermVar :: Term -> String -> String -> Term
-renameTermVar (Var s1) s s' = if (s1 == s) then (Var s') else (Var s1)
-renameTermVar (Abstraction s1 t) s s' = (Abstraction s' (renameTermVar t s s')) -- prepei na ginei check oti einai omws free h s1
-renameTermVar (Application t1 t2) s s' = (Application (renameTermVar t1 s s') (renameTermVar t2 s s'))
---den eiani swsto, giati paizoun malakies me tis fv alla einai mia arxh
-alphaReduce :: Term -> Term
-alphaReduce (Abstraction s t) = (Abstraction s' t') where
-	s' = s ++ "'"
-	t' = renameTermVar t s s'
+--freeVars :: Term->[Var] -> [Var]
+--freeVars t [] = []
+--freeVars (Var v) =  if (memberStr v) then [] else [v]
+--freeVars (Application t1 t2) = (freeVars t1 ++ freeVars t2)
+--freeVars (Abstraction s1 t2) = (freeVars t1 ++ freeVars t2)
+
+--renameTermVar :: Term -> String -> String -> Term
+--renameTermVar (Var s1) s s' = if (s1 == s) then (Var s') else (Var s1)
+--renameTermVar (Abstraction s1 t) s s' = (Abstraction s' (renameTermVar t s s')) -- prepei na ginei check oti einai omws free h s1
+--renameTermVar (Application t1 t2) s s' = (Application (renameTermVar t1 s s') (renameTermVar t2 s s'))
+
+----den eiani swsto, giati paizoun malakies me tis fv alla einai mia arxh
+--alphaReduce :: Term -> Term
+--alphaReduce (Abstraction s t) = (Abstraction s' t') where
+--	s' = s ++ "'"
+--	t' = renameTermVar t s s'
 
 reduce :: Term -> Term
 reduce x = x
@@ -136,8 +144,10 @@ lmult = \m n f -> m (n f)
 
 {- lexp m n = m ^ n -}
 --lexp :: Church Integer -> Church Integer -> Church Integer
---lexp = \m n -> n m
+lexp = (\m -> (\n -> n m))
 
 {- Booleans -}
-ltrue = \x y -> x
-lfalse = \x y -> y
+ltrue = (\x -> (\y -> x))
+lfalse = (\x -> (\y -> y))
+
+iszero = (\n -> ((n (\x -> lfalse)) ltrue))

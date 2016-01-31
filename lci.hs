@@ -103,21 +103,23 @@ prettyprint term = PP.render (ppr term)
 
 
 ------------------------------------------- Main ------------------------------------------
+loopPrinter = do 
+	putStr "> "
+	inputStr <- readLn 
+	let parsedString = myparse inputStr  
+	putStrLn ("Normal form of " ++ inputStr ++ ": " ++ prettyprint parsedString)
+	loopPrinter
+
 main :: IO ()
 main = do  
-    putStrLn "Type a lambda expression like \"(\\\\x.\\\\y.x)\":"  
-    inputStr <- readLn 
-    let parsedString = myparse inputStr  
-    putStrLn ("Normal form of " ++ inputStr ++ ": " ++ prettyprint parsedString)  
-
+    putStrLn ("Type a lambda expression like \"(\\\\x.\\\\y.x)\" or ^D to exit:")
+    loopPrinter
 
 ---------------------------------------- TEST CASES ---------------------------------------
 inputString = "(\\x.\\y.x)(\\z.z)"
 parseInputString = myparse inputString
 myterm = Application (Abstraction "x" ( Abstraction "y"  (Var "x"))) (Abstraction "z" ( Var "z"))
 prettyPrinted = prettyprint myterm
-
-
 
 
 

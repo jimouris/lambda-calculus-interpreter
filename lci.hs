@@ -54,6 +54,8 @@ replace str (Abstraction s1 t1) trepl = if (str == s1) then (replace str t1 trep
 betaReduction :: Term -> Term
 betaReduction (Application (Abstraction abstr t) appt) = (replace abstr (Abstraction abstr t) appt)
 betaReduction (Application (Application t1 t2) appt) = betaReduction (Application (betaReduction (Application t1 t2)) appt)
+betaReduction (Abstraction v (Application t1 t2)) = (Abstraction v (betaReduction (Application t1 t2)))
+betaReduction (Abstraction v1 (Abstraction v2 t2)) = (Abstraction v1 (betaReduction (Abstraction v2 t2)))
 
 reduce :: Term -> Term
 reduce t = t

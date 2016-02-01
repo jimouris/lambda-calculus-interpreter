@@ -34,7 +34,7 @@ boundVars (Var v) = []
 boundVars (Application t1 t2) = boundVars t1 ++ boundVars t2
 boundVars (Abstraction s1 t2) = [s1] ++ boundVars t2
 
-renameVarinTerm :: Term -> String -> String -> Term
+--renameVarinTerm :: Term -> String -> String -> Term
 renameVarinTerm (Var s1) s s' = if (s1 == s) then (Var s') else (Var s1)
 renameVarinTerm (Abstraction s1 t) s s' = if (s1 == s) then (Abstraction s' (renameVarinTerm t s s')) else (Abstraction s1 (renameVarinTerm t s s'))
 renameVarinTerm (Application t1 t2) s s' = (Application (renameVarinTerm t1 s s') (renameVarinTerm t2 s s'))
@@ -45,8 +45,15 @@ alphaReduction (Abstraction s t) = (Abstraction s' t') where
 	s' = s ++ "'"
 	t' = renameVarinTerm t s s'
 
+replace :: String->Term->Term -> Term
+replace str (Var s1) trepl = if (str == s1) then trepl else (Var s1)
+replace str (Abstraction s1 t1) trepl = if (str == s1) then (replace str t1 trepl) else (Abstraction s1 (replace str t1 trepl))
+--replace str (Application t1 t2) trepl = if (str == s1) then 
+
+-- kai meta 8a prepei na elegxoume kai gia bounded-free vars
 betaReduction :: Term -> Term
-betaReduction x = x
+betaReduction (Application (Abstraction abstr t) appt) = (replace abstr (Abstraction abstr t) appt)
+betaReduction (Application (Application t1 t2) appt) = betaReduction (Application (betaReduction (Application t1 t2)) appt)
 
 reduce :: Term -> Term
 reduce t = t
@@ -128,7 +135,8 @@ parseInputString = myparse inputString
 myterm = Application (Abstraction "x" ( Abstraction "y"  (Var "x"))) (Abstraction "z" ( Var "z"))
 prettyPrinted = prettyprint myterm
 
-
+--betaReduction (myparse "(\\x.x)(\\y.y)")
+--betaReduction (myparse "((\\x.x)(\\y.y))(\\z.z)")
 
 ------------------------------------- Church Numerals -------------------------------------
 type Church a = (a -> a) -> a -> a

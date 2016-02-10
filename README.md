@@ -3,6 +3,6 @@
 # λ-Calculus Interpreter
 A simple lambda calculus interpreter
 
-MIT LICENSE 2015-2016
+2015-2016
 
 [badge-license]: https://img.shields.io/badge/license-MIT-green.svg

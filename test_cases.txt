@@ -1,9 +1,9 @@
-"(\\x.zx)w"
-"(\\x.\\y.zxy)w"
-"(\\y.zy(\\x.xy))w"
-"(\\x.\\y.zxy)(wy)"
-"xyz"
-"\\x.zx"
-"\\y.zxy"
-"\\x.zxx"
-"\\z.(\\f.\\x.fzx)(\\y.y)"
+prettyprint (reduce (myparse "(\\x.zx)w"))
+prettyprint (reduce (myparse "(\\x.\\y.zxy)w"))
+prettyprint (reduce (myparse "(\\y.zy(\\x.xy))w"))
+prettyprint (reduce (myparse "(\\x.\\y.zxy)(wy)"))
+prettyprint (reduce (myparse "xyz"))
+prettyprint (reduce (myparse "\\x.zx"))
+prettyprint (reduce (myparse "\\y.zxy"))
+prettyprint (reduce (myparse "\\x.zxx"))
+prettyprint (reduce (myparse "\\z.(\\f.\\x.fzx)(\\y.y)"))

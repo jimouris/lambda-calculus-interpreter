@@ -48,7 +48,6 @@ alphaReduction str (Abstraction s t) = (Abstraction s' t') where
     t' = renameVarinTerm t s s'
 alphaReduction str term = term
 
---alphaReduceAll (s:strs) (Application (Var s1) (Var s2)) = (Application (Var s1) (Var s2))
 alphaReduceAll :: [String]->Term -> Term
 alphaReduceAll (s:strs) (Application t1 t2) = (Application t1 t2)
 alphaReduceAll (s:strs) (Abstraction s1 t1) = (alphaReduction s (Abstraction s1 (alphaReduceAll strs t1)))
@@ -66,19 +65,14 @@ betaReduction term = case term of
     (Application (Abstraction abstr t) appt) -> (replace (Abstraction abstr t) abstr appt)
     (Application (Application t1 t2) appt) -> (Application (betaReduction (Application t1 t2)) appt)
     (Abstraction s t) -> (Abstraction s t)
-    --(Application t1 t2) -> (Application t1 t2)
-    --(Application (Application t1 t2) appt) -> (betaReduction (Application (betaReduction (Application t1 t2)) appt))
-
-etaReduction :: Term -> Term
-etaReduction term = case term of 
-    (Abstraction str1 (Application t (Var str2))) -> if (str1 == str2 && (notElem str1 (freeVars t))) then t else (Abstraction str1 (Application t (Var str2)))
-    term -> term
 
 reduce :: Term -> Term
 reduce (Var s) = (Var s)
-reduce (Application (Var v1) t) = (Application (Var v1) t) --na valw reduction 
+reduce (Application (Var v1) t) = (Application (Var v1) (reduce t))
 reduce (Application (Application t1 t2) t3) = (Application (Application t1 t2) t3)
-reduce (Abstraction s1 t1) = reduce (etaReduction (Abstraction s1 t1))
+reduce (Abstraction str1 t1) = case t1 of
+    (Application t2 (Var str2)) -> if (str1 == str2 && (notElem str1 (freeVars t2))) then (reduce t2) else (Abstraction str1 (reduce t1)) --eta Reduction
+    otherwise -> (Abstraction str1 (reduce t1))
 reduce (Application t1 t2) = reduce (betaReduction (Application t1' t2))
     where
         t1' = (alphaReduceAll intrsct t1)

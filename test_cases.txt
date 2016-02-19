@@ -25,26 +25,41 @@ myResult (myparse "\\x.zxx")
 myResult (myparse "\\z.(\\f.\\x.fzx)(\\y.y)")
 "\\z.z"
 
-myResult (myparse "(\\z.z(\\x.\\y.y)(\\x.\\y.x))(\\x.\\y.x)")
-"\\x.\\y.y"
-
+// succ c0
 myResult (myparse "(\\n.\\f.\\x.nf(fx))(\\f.\\x.x)")
 \\f.f
 
+// succ c1
 myResult (myparse "(\\n.\\f.\\x.nf(fx))(\\f.\\x.fx)")
 "\\b.\\c.b(bc)"
 
+// not true
 myResult (myparse "(\\z.z(\\x.\\y.y)(\\x.\\y.x))(\\x.\\y.x)")
 "\\b.\\c.c"
 
+// fst (true, false)
 myResult (myparse "(\\z.z(\\x.\\y.x))((\\x.\\y.\\z.zxy)(\\x.\\y.x)(\\x.\\y.y))")
 "\\x.\\y.x"
 
+// snd (true, false)
 myResult (myparse "(\\z.z(\\x.\\y.y))((\\x.\\y.\\z.zxy)(\\x.\\y.x)(\\x.\\y.y))")
 "\\x.\\y.y"
 
+// if true then e else r
 myResult (myparse "(\\z.\\x.\\y.zxy)(\\x.\\y.x)er")
 "e"
 
+// if false then e else r
 myResult (myparse "(\\z.\\x.\\y.zxy)(\\x.\\y.x)er")
 "r"
+
+// fst (e, r)
+myResult (myparse "(\\z.z(\\x.\\y.x))((\\x.\\y.\\z.zxy)er)")
+"e"
+
+// snd (e, r)
+myResult (myparse "(\\z.z(\\x.\\y.y))((\\x.\\y.\\z.zxy)er)")
+"r"
+
+// omega
+myResult (myparse "(\\x.xx)(\\x.xx)")

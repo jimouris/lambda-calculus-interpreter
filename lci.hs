@@ -56,15 +56,20 @@ alphaReduction :: String->Term -> Term
 alphaReduction str (Abstraction s t) = (Abstraction s' t') where
     s' = str
     t' = renameVarinTerm t s s'
-alphaReduction str (Application t1 t2) = 
 alphaReduction str term = term
+--alphaReduction str (Application t1 t2) = (Application t1' t2) where
+--    s' = str
+--    t1' = renameVarinTerm t1 s s'
+
+--    t1' = alphaReduction (intrsct!!0) t1 where
+--        intrsct = azList \\ varsInT
+--        varsInT = (freeVars t2) ++ (boundVars t2)
 
 replace :: Term->String->Term -> Term
 replace (Var s1) str trepl = if (str == s1) then trepl else (Var s1)
 replace (Abstraction s1 t1) str trepl = if (str == s1) then (replace t1 str trepl) else (Abstraction s1 (replace t1 str trepl))
 replace (Application t1 t2) str trepl = (Application (replace t1 str trepl) (replace t2 str trepl))
 
--- kai meta 8a prepei na elegxoume kai gia bounded-free vars
 betaReduction :: Term -> Term
 betaReduction term = case term of
     (Application (Abstraction abstr t) appt) -> (replace (Abstraction abstr t) abstr appt)
@@ -72,11 +77,25 @@ betaReduction term = case term of
     (Abstraction s t) -> (Abstraction s t)
     (Var s) -> (Var s)
 
+--alphaReduceAll (s:strs) (Application (Var s1) (Var s2)) = (Application (Var s1) (Var s2))
+alphaReduceAll :: [String]->Term -> Term
+alphaReduceAll (s:strs) (Application t1 t2) = (Application t1 t2)
+alphaReduceAll (s:strs) (Abstraction s1 t1) = (alphaReduction s (Abstraction s1 (alphaReduceAll strs t1)))
+alphaReduceAll (s:strs) (Var s1) = (Var s1)
+
 reduce :: Term -> Term
-reduce t = betaReduction t2 where 
-        t2 = (alphaReduction (intrsct!!0) t) where
-            intrsct = azList \\ varsInT
-            varsInT = (freeVars t) ++ (boundVars t) 
+reduce (Application t1 t2) = betaReduction (Application t1' t2)
+    where
+        t1' = (alphaReduceAll intrsct t1)
+            where
+                intrsct = azList \\ varsInT
+                varsInT = (freeVars t2) ++ (boundVars t2) 
+reduce (Abstraction s1 t1) = (Abstraction s1 (reduce t1))
+reduce (Var s) = (Var s)
+
+        --t2 = (alphaReduction (intrsct!!0) t) where
+        --    intrsct = azList \\ varsInT
+        --    varsInT = (freeVars t) ++ (boundVars t) 
 
 --------------------------------------- PARSER --------------------------------------------
 lambdaTerm :: Parser Term

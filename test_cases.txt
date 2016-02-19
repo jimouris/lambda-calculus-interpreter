@@ -42,3 +42,5 @@ myResult (myparse "(\\z.z(\\x.\\y.x))((\\x.\\y.\\z.zxy)(\\x.\\y.x)(\\x.\\y.y))")
 
 myResult (myparse "(\\z.z(\\x.\\y.y))((\\x.\\y.\\z.zxy)(\\x.\\y.x)(\\x.\\y.y))")
 "\\x.\\y.y"
+
+myResult (myparse "(\\z.\\x.\\y.zxy)(\\x.\\y.x)er")

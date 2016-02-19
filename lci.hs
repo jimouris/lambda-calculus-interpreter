@@ -49,9 +49,8 @@ alphaReduction str (Abstraction s t) = (Abstraction s' t') where
 alphaReduction str term = term
 
 alphaReduceAll :: [String]->Term -> Term
-alphaReduceAll (s:strs) (Application t1 t2) = (Application t1 t2)
 alphaReduceAll (s:strs) (Abstraction s1 t1) = (alphaReduction s (Abstraction s1 (alphaReduceAll strs t1)))
-alphaReduceAll (s:strs) (Var s1) = (Var s1)
+alphaReduceAll (strs) t = t
 
 replace :: Term->String->Term -> Term
 replace (Var s1) str trepl = if (str == s1) then trepl else (Var s1)

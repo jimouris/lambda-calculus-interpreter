@@ -49,12 +49,16 @@ renameVarinTerm (Abstraction s1 t) s s' = if (s1 /= s) then (Abstraction s1 (ren
 renameVarinTerm (Application t1 t2) s s' = (Application (renameVarinTerm t1 s s') (renameVarinTerm t2 s s'))
 
 ------- Alpha reduce applies only to abstraction! ------
-azList = ['a'..'z']
+azList :: [String]
+azList = ["a","b","z"]
 
-alphaReduction :: Int->Term -> Term
-alphaReduction cnt (Abstraction s t) = (Abstraction s' t') where
-    s' = [azList!!cnt]
+alphaReduction :: String->Term -> Term
+alphaReduction str (Abstraction s t) = (Abstraction s' t') where
+    s' = str
     t' = renameVarinTerm t s s'
+    --s' = [azList!!cnt]
+
+    --lx.M -> ly.M x=y yoxiFVM
 
 
 replace :: String->Term->Term -> Term
@@ -70,7 +74,9 @@ betaReduction (Abstraction v (Application t1 t2)) = (Abstraction v (betaReductio
 betaReduction (Abstraction v1 (Abstraction v2 t2)) = (Abstraction v1 (betaReduction (Abstraction v2 t2)))
 
 reduce :: Term -> Term
-reduce t = t
+reduce t = (alphaReduction (intrsct!!0) t) where
+    intrsct = azList \\ varsInT
+    varsInT = (freeVars t) ++ (boundVars t) 
 
 --------------------------------------- PARSER --------------------------------------------
 lambdaTerm :: Parser Term

@@ -33,7 +33,7 @@ boundVars (Var v) = []
 boundVars (Application t1 t2) = boundVars t1 ++ boundVars t2
 boundVars (Abstraction s1 t2) = [s1] ++ boundVars t2
 
---renameVarinTerm :: Term -> String -> String -> Term
+renameVarinTerm :: Term -> String -> String -> Term
 renameVarinTerm (Var s1) s s' = if (s1 == s) then (Var s') else (Var s1)
 renameVarinTerm (Abstraction s1 t) s s' = if (s1 /= s) then (Abstraction s1 (renameVarinTerm t s s')) else (Abstraction s1 t)
 renameVarinTerm (Application t1 t2) s s' = (Application (renameVarinTerm t1 s s') (renameVarinTerm t2 s s'))
@@ -64,20 +64,6 @@ betaReduction term = case term of
     (Application (Abstraction abstr t) appt) -> (replace (Abstraction abstr t) abstr appt)
     (Application (Application t1 t2) appt) -> (Application (betaReduction (Application t1 t2)) appt)
     (Abstraction s t) -> (Abstraction s t)
-
---reduce :: Term -> Term
---reduce (Var s) = (Var s)
---reduce (Application (Var v1) t) = (Application (Var v1) (reduce t))
---reduce (Abstraction str1 t1) = case t1 of
---    (Application t2 (Var str2)) -> if (str1 == str2 && (notElem str1 (freeVars t2))) then (reduce t2) else (Abstraction str1 (reduce t1)) --eta Reduction
---    otherwise -> (Abstraction str1 (reduce t1))
---reduce (Application t1 t2) = reduce (betaReduction (Application t1' t2))
---    where
---        t1' = (alphaReduceAll intrsct t1)
---            where
---                intrsct = azList \\ varsInT
---                varsInT = (freeVars t2) ++ (boundVars t2)
-----reduce (Application (Application t1 t2) t3) = (Application (reduce (Application t1 t2)) t3)
 
 reduceOne :: Term -> Term
 reduceOne (Var s) = (Var s)
@@ -178,9 +164,6 @@ inputString = "(\\x.\\y.x)(\\z.z)"
 parseInputString = myparse inputString
 myterm = Application (Abstraction "x" ( Abstraction "y"  (Var "x"))) (Abstraction "z" ( Var "z"))
 prettyPrinted = prettyprint myterm
-
---betaReduction (myparse "(\\x.x)(\\y.y)")
---betaReduction (myparse "((\\x.x)(\\y.y))(\\z.z)")
 
 ------------------------------------- Church Numerals -------------------------------------
 type Church a = (a -> a) -> a -> a

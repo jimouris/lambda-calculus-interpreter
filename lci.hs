@@ -12,9 +12,9 @@ import Text.Parsec.String
 import qualified Text.PrettyPrint as PP
 
 data Term = Var String
-		  | Application Term Term
-		  | Abstraction String Term
-		  deriving(Show, Eq)
+          | Application Term Term
+          | Abstraction String Term
+          deriving(Show, Eq)
 
 data Result = Res Term Int [Term] [String] deriving(Show, Eq)
 
@@ -51,8 +51,8 @@ renameVarinTerm (Application t1 t2) s s' = (Application (renameVarinTerm t1 s s'
 ------- Alpha reduce applies only to abstraction! ------
 alphaReduction :: Term -> Term
 alphaReduction (Abstraction s t) = (Abstraction s' t') where
-	s' = s ++ "'"
-	t' = renameVarinTerm t s s'
+    s' = s ++ "'"
+    t' = renameVarinTerm t s s'
 
 replace :: String->Term->Term -> Term
 replace str (Var s1) trepl = if (str == s1) then trepl else (Var s1)
@@ -75,36 +75,36 @@ lambdaTerm = lambdaAbstraction <|> lambdaApplication <|> simple
 
 lambdaAbstraction :: Parser Term
 lambdaAbstraction = do
-	char '\\'
-	var <- letter
-	char '.'
-	body <- lambdaTerm
-	return(Abstraction [var] body)
+    char '\\'
+    var <- letter
+    char '.'
+    body <- lambdaTerm
+    return(Abstraction [var] body)
 
 lambdaApplication :: Parser Term
 lambdaApplication = do
-	apps <- many1 simple
-	return(foldl1 Application apps)
+    apps <- many1 simple
+    return(foldl1 Application apps)
 
 simple :: Parser Term
 simple = lambdaVar <|> paren
 
 lambdaVar :: Parser Term
 lambdaVar = do
-	var <- letter
-	return(Var [var])
+    var <- letter
+    return(Var [var])
 
 paren :: Parser Term
 paren = do
-	char '('
-	term <- lambdaTerm
-	char ')'
-	return term
+    char '('
+    term <- lambdaTerm
+    char ')'
+    return term
 
 myparse :: String -> Term
 myparse str = case (parse lambdaTerm "" str) of
-	Left msg -> error $ show msg
-	Right term' -> term'
+    Left msg -> error $ show msg
+    Right term' -> term'
 
 test = myparse "\\z.(\\f.\\x.fzx)(\\y.y)"
 pair = myparse "\\x.\\y.\\z.zxy"
@@ -129,11 +129,11 @@ prettyprint term = PP.render (ppr term)
 
 ------------------------------------------- Main ------------------------------------------
 loopPrinter = do 
-	putStr "> "
-	inputStr <- readLn 
-	let parsedString = myparse inputStr  
-	putStrLn ("Normal form of " ++ inputStr ++ ": " ++ prettyprint parsedString)
-	loopPrinter
+    putStr "> "
+    inputStr <- readLn 
+    let parsedString = myparse inputStr  
+    putStrLn ("Normal form of " ++ inputStr ++ ": " ++ prettyprint parsedString)
+    loopPrinter
 
 main :: IO ()
 main = do  

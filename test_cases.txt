@@ -1,9 +1,26 @@
 prettyprint (reduce (myparse "(\\x.zx)w"))
+"zw"
+
 prettyprint (reduce (myparse "(\\x.\\y.zxy)w"))
+"zw"
+
 prettyprint (reduce (myparse "(\\y.zy(\\x.xy))w"))
+"zw(\\x.xw)"
+
 prettyprint (reduce (myparse "(\\x.\\y.zxy)(wy)"))
+"z(wy)"
+
 prettyprint (reduce (myparse "xyz"))
+"xyz"
+
 prettyprint (reduce (myparse "\\x.zx"))
+"z"
+
 prettyprint (reduce (myparse "\\y.zxy"))
+"zx"
+
 prettyprint (reduce (myparse "\\x.zxx"))
+"\\x.zxx"
+
 prettyprint (reduce (myparse "\\z.(\\f.\\x.fzx)(\\y.y)"))
+"\\z.z"

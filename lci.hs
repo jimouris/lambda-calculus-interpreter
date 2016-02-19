@@ -61,11 +61,12 @@ replace (Application t1 t2) str trepl = (Application (replace t1 str trepl) (rep
 
 betaReduction :: Term -> Term
 betaReduction term = case term of
-    (Application (Abstraction abstr t) appt) -> (replace (Abstraction abstr t) abstr appt)
-    (Application (Application t1 t2) appt) -> (betaReduction (Application (betaReduction (Application t1 t2)) appt))
-    (Application t1 t2) -> (Application t1 t2)
-    (Abstraction s t) -> (Abstraction s t)
     (Var s) -> (Var s)
+    (Application (Var v1) t) -> (Application (Var v1) t)
+    (Application (Abstraction abstr t) appt) -> (replace (Abstraction abstr t) abstr appt)
+    (Application (Application t1 t2) appt) -> (Application (betaReduction (Application t1 t2)) appt)
+    (Abstraction s t) -> (Abstraction s t)
+    --(Application t1 t2) -> (Application t1 t2)
     --(Application (Application t1 t2) appt) -> (betaReduction (Application (betaReduction (Application t1 t2)) appt))
 
 etaReduction :: Term -> Term
@@ -74,14 +75,17 @@ etaReduction term = case term of
     term -> term
 
 reduce :: Term -> Term
-reduce (Application t1 t2) = betaReduction (Application t1' t2)
+reduce (Var s) = (Var s)
+reduce (Application (Var v1) t) = (Application (Var v1) t) --na valw reduction 
+reduce (Application (Application t1 t2) t3) = (Application (Application t1 t2) t3)
+reduce (Abstraction s1 t1) = reduce (etaReduction (Abstraction s1 t1))
+reduce (Application t1 t2) = reduce (betaReduction (Application t1' t2))
     where
         t1' = (alphaReduceAll intrsct t1)
             where
                 intrsct = azList \\ varsInT
-                varsInT = (freeVars t2) ++ (boundVars t2) 
-reduce (Abstraction s1 t1) = (Abstraction s1 (reduce t1))
-reduce (Var s) = (Var s)
+                varsInT = (freeVars t2) ++ (boundVars t2)
+
 
 --------------------------------------- PARSER --------------------------------------------
 lambdaTerm :: Parser Term

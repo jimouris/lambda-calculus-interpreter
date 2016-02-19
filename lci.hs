@@ -82,7 +82,12 @@ betaReduction term = case term of
 reduceOne :: Term -> Term
 reduceOne (Var s) = (Var s)
 reduceOne (Application (Var v1) t) = (Application (Var v1) (reduceOne t))
-reduceOne (Application (Application t1 t2) t3) = (Application (reduceOne (Application t1 t2)) t3)
+reduceOne (Application (Application t1 t2) t3) = (Application (betaReduction (Application t1' t2)) t3)
+    where
+        t1' = (alphaReduceAll intrsct t1)
+            where
+                intrsct = azList \\ varsInT
+                varsInT = (freeVars t2) ++ (boundVars t2)
 reduceOne (Abstraction str1 t1) = case t1 of
     (Application t2 (Var str2)) -> if (str1 == str2 && (notElem str1 (freeVars t2))) then t2 else (Abstraction str1 (reduceOne t1)) --eta Reduction
     otherwise -> (Abstraction str1 (reduceOne t1))

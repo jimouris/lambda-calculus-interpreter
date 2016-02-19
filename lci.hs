@@ -29,14 +29,14 @@ data Result = Res Term Int [Term] [String] deriving(Show, Eq)
 --freeVars (Application t1 t2) = (freeVars t1 ++ freeVars t2)
 --freeVars (Abstraction s1 t2) = (freeVars t1 ++ freeVars t2)
 
-delete x [] = []
-delete x (y:xs) | (x == y) = (delete x xs)
+delete1 x [] = []
+delete1 x (y:xs) | (x == y) = (delete x xs)
                 | otherwise = (y:delete x xs)
 
 freeVars :: Term -> [String]
-freeVars t = case t of  Var s -> s
+freeVars t = case t of  Var s -> [s]
                         Application t1 t2 -> freeVars t1 ++ freeVars t2
-                        Abstraction s1 t2 -> delete s1 (freeVars s1 t2)
+                        Abstraction s1 t2 -> delete s1 (freeVars t2)
 
 boundVars :: Term -> [String]
 boundVars (Var v) = []

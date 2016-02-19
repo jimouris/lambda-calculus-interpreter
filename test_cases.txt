@@ -1,44 +1,44 @@
-prettyprint (reduce (myparse "(\\x.zx)w"))
+myResult (myparse "(\\x.zx)w")
 "zw"
 
-prettyprint (reduce (myparse "(\\x.\\y.zxy)w"))
+myResult (myparse "(\\x.\\y.zxy)w")
 "zw"
 
-prettyprint (reduce (myparse "(\\y.zy(\\x.xy))w"))
+myResult (myparse "(\\y.zy(\\x.xy))w")
 "zw(\\x.xw)"
 
-prettyprint (reduce (myparse "(\\x.\\y.zxy)(wy)"))
+myResult (myparse "(\\x.\\y.zxy)(wy)")
 "z(wy)"
 
-prettyprint (reduce (myparse "xyz"))
+myResult (myparse "xyz")
 "xyz"
 
-prettyprint (reduce (myparse "\\x.zx"))
+myResult (myparse "\\x.zx")
 "z"
 
-prettyprint (reduce (myparse "\\y.zxy"))
+myResult (myparse "\\y.zxy")
 "zx"
 
-prettyprint (reduce (myparse "\\x.zxx"))
+myResult (myparse "\\x.zxx")
 "\\x.zxx"
 
-prettyprint (reduce (myparse "\\z.(\\f.\\x.fzx)(\\y.y)"))
+myResult (myparse "\\z.(\\f.\\x.fzx)(\\y.y)")
 "\\z.z"
 
-prettyprint (reduce (myparse "(\\z.z(\\x.\\y.y)(\\x.\\y.x))(\\x.\\y.x)"))
+myResult (myparse "(\\z.z(\\x.\\y.y)(\\x.\\y.x))(\\x.\\y.x)")
 "\\x.\\y.y"
 
-prettyprint (reduce (myparse "(\\n.\\f.\\x.nf(fx))(\\f.\\x.x)"))
+myResult (myparse "(\\n.\\f.\\x.nf(fx))(\\f.\\x.x)")
 \\f.f
 
-prettyprint (reduce (myparse "(\\n.\\f.\\x.nf(fx))(\\f.\\x.fx)"))
+myResult (myparse "(\\n.\\f.\\x.nf(fx))(\\f.\\x.fx)")
 "\\b.\\c.b(bc)"
 
-prettyprint (reduce (myparse "(\\z.z(\\x.\\y.y)(\\x.\\y.x))(\\x.\\y.x)"))
+myResult (myparse "(\\z.z(\\x.\\y.y)(\\x.\\y.x))(\\x.\\y.x)")
 "\\b.\\c.c"
 
-prettyprint (reduce (myparse "(\\z.z(\\x.\\y.x))((\\x.\\y.\\z.zxy)(\\x.\\y.x)(\\x.\\y.y))"))
+myResult (myparse "(\\z.z(\\x.\\y.x))((\\x.\\y.\\z.zxy)(\\x.\\y.x)(\\x.\\y.y))")
 "\\x.\\y.x"
 
-prettyprint (reduce (myparse "(\\z.z(\\x.\\y.y))((\\x.\\y.\\z.zxy)(\\x.\\y.x)(\\x.\\y.y))"))
+myResult (myparse "(\\z.z(\\x.\\y.y))((\\x.\\y.\\z.zxy)(\\x.\\y.x)(\\x.\\y.y))")
 "\\x.\\y.y"

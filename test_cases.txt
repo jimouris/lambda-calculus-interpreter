@@ -24,3 +24,21 @@ prettyprint (reduce (myparse "\\x.zxx"))
 
 prettyprint (reduce (myparse "\\z.(\\f.\\x.fzx)(\\y.y)"))
 "\\z.z"
+
+prettyprint (reduce (myparse "(\\z.z(\\x.\\y.y)(\\x.\\y.x))(\\x.\\y.x)"))
+"\\x.\\y.y"
+
+prettyprint (reduce (myparse "(\\n.\\f.\\x.nf(fx))(\\f.\\x.x)"))
+\\f.f
+
+prettyprint (reduce (myparse "(\\n.\\f.\\x.nf(fx))(\\f.\\x.fx)"))
+"\\b.\\c.b(bc)"
+
+prettyprint (reduce (myparse "(\\z.z(\\x.\\y.y)(\\x.\\y.x))(\\x.\\y.x)"))
+"\\b.\\c.c"
+
+prettyprint (reduce (myparse "(\\z.z(\\x.\\y.x))((\\x.\\y.\\z.zxy)(\\x.\\y.x)(\\x.\\y.y))"))
+"\\x.\\y.x"
+
+prettyprint (reduce (myparse "(\\z.z(\\x.\\y.y))((\\x.\\y.\\z.zxy)(\\x.\\y.x)(\\x.\\y.y))"))
+"\\x.\\y.y"

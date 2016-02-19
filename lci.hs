@@ -36,7 +36,7 @@ delete1 x (y:xs) | (x == y) = (delete x xs)
 freeVars :: Term -> [String]
 freeVars t = case t of  Var s -> [s]
                         Application t1 t2 -> freeVars t1 ++ freeVars t2
-                        Abstraction s1 t2 -> delete s1 (freeVars t2)
+                        Abstraction s1 t2 -> delete1 s1 (freeVars t2)
 
 boundVars :: Term -> [String]
 boundVars (Var v) = []
@@ -45,14 +45,17 @@ boundVars (Abstraction s1 t2) = [s1] ++ boundVars t2
 
 --renameVarinTerm :: Term -> String -> String -> Term
 renameVarinTerm (Var s1) s s' = if (s1 == s) then (Var s') else (Var s1)
-renameVarinTerm (Abstraction s1 t) s s' = if (s1 == s) then (Abstraction s' (renameVarinTerm t s s')) else (Abstraction s1 (renameVarinTerm t s s'))
+renameVarinTerm (Abstraction s1 t) s s' = if (s1 /= s) then (Abstraction s1 (renameVarinTerm t s s')) else (Abstraction s1 t)
 renameVarinTerm (Application t1 t2) s s' = (Application (renameVarinTerm t1 s s') (renameVarinTerm t2 s s'))
 
 ------- Alpha reduce applies only to abstraction! ------
-alphaReduction :: Term -> Term
-alphaReduction (Abstraction s t) = (Abstraction s' t') where
-    s' = s ++ "'"
+azList = ['a'..'z']
+
+alphaReduction :: Int->Term -> Term
+alphaReduction cnt (Abstraction s t) = (Abstraction s' t') where
+    s' = [azList!!cnt]
     t' = renameVarinTerm t s s'
+
 
 replace :: String->Term->Term -> Term
 replace str (Var s1) trepl = if (str == s1) then trepl else (Var s1)

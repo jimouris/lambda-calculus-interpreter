@@ -50,16 +50,12 @@ renameVarinTerm (Application t1 t2) s s' = (Application (renameVarinTerm t1 s s'
 
 ------- Alpha reduce applies only to abstraction! ------
 azList :: [String]
-azList = ["a","b","z"]
+azList = ["a","b","c","d","e","f","g","h","i","j","k","l","m","n","o","p","q","r","s","t","u","v","w","x","y","z"]
 
 alphaReduction :: String->Term -> Term
 alphaReduction str (Abstraction s t) = (Abstraction s' t') where
     s' = str
     t' = renameVarinTerm t s s'
-    --s' = [azList!!cnt]
-
-    --lx.M -> ly.M x=y yoxiFVM
-
 
 replace :: String->Term->Term -> Term
 replace str (Var s1) trepl = if (str == s1) then trepl else (Var s1)

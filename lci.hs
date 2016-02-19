@@ -56,23 +56,27 @@ alphaReduction :: String->Term -> Term
 alphaReduction str (Abstraction s t) = (Abstraction s' t') where
     s' = str
     t' = renameVarinTerm t s s'
+alphaReduction str (Application t1 t2) = 
+alphaReduction str term = term
 
-replace :: String->Term->Term -> Term
-replace str (Var s1) trepl = if (str == s1) then trepl else (Var s1)
-replace str (Abstraction s1 t1) trepl = if (str == s1) then (replace str t1 trepl) else (Abstraction s1 (replace str t1 trepl))
---replace str (Application t1 t2) trepl = if (str == s1) then 
+replace :: Term->String->Term -> Term
+replace (Var s1) str trepl = if (str == s1) then trepl else (Var s1)
+replace (Abstraction s1 t1) str trepl = if (str == s1) then (replace t1 str trepl) else (Abstraction s1 (replace t1 str trepl))
+replace (Application t1 t2) str trepl = (Application (replace t1 str trepl) (replace t2 str trepl))
 
 -- kai meta 8a prepei na elegxoume kai gia bounded-free vars
 betaReduction :: Term -> Term
-betaReduction (Application (Abstraction abstr t) appt) = (replace abstr (Abstraction abstr t) appt)
-betaReduction (Application (Application t1 t2) appt) = betaReduction (Application (betaReduction (Application t1 t2)) appt)
-betaReduction (Abstraction v (Application t1 t2)) = (Abstraction v (betaReduction (Application t1 t2)))
-betaReduction (Abstraction v1 (Abstraction v2 t2)) = (Abstraction v1 (betaReduction (Abstraction v2 t2)))
+betaReduction term = case term of
+    (Application (Abstraction abstr t) appt) -> (replace (Abstraction abstr t) abstr appt)
+    (Application (Application t1 t2) appt) -> betaReduction (Application (betaReduction (Application t1 t2)) appt)
+    (Abstraction s t) -> (Abstraction s t)
+    (Var s) -> (Var s)
 
 reduce :: Term -> Term
-reduce t = (alphaReduction (intrsct!!0) t) where
-    intrsct = azList \\ varsInT
-    varsInT = (freeVars t) ++ (boundVars t) 
+reduce t = betaReduction t2 where 
+        t2 = (alphaReduction (intrsct!!0) t) where
+            intrsct = azList \\ varsInT
+            varsInT = (freeVars t) ++ (boundVars t) 
 
 --------------------------------------- PARSER --------------------------------------------
 lambdaTerm :: Parser Term

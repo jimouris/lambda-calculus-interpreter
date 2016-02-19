@@ -18,20 +18,10 @@ data Term = Var String
 
 data Result = Res Term Int [Term] [String] deriving(Show, Eq)
 
--- Computes Normal Form --
---memberStr :: String->[String] -> Bool
---memberStr str [] = False
---memberStr str (s:strl) = if (s == str) then True else memberStr str strl
-
---freeVars :: Term->[Var] -> [Var]
---freeVars t [] = []
---freeVars (Var v) =  if (memberStr v) then [] else [v]
---freeVars (Application t1 t2) = (freeVars t1 ++ freeVars t2)
---freeVars (Abstraction s1 t2) = (freeVars t1 ++ freeVars t2)
 
 delete1 x [] = []
-delete1 x (y:xs) | (x == y) = (delete x xs)
-                | otherwise = (y:delete x xs)
+delete1 x (y:xs) | (x == y) = (delete1 x xs)
+                | otherwise = (y:delete1 x xs)
 
 freeVars :: Term -> [String]
 freeVars t = case t of  Var s -> [s]
@@ -57,13 +47,12 @@ alphaReduction str (Abstraction s t) = (Abstraction s' t') where
     s' = str
     t' = renameVarinTerm t s s'
 alphaReduction str term = term
---alphaReduction str (Application t1 t2) = (Application t1' t2) where
---    s' = str
---    t1' = renameVarinTerm t1 s s'
 
---    t1' = alphaReduction (intrsct!!0) t1 where
---        intrsct = azList \\ varsInT
---        varsInT = (freeVars t2) ++ (boundVars t2)
+--alphaReduceAll (s:strs) (Application (Var s1) (Var s2)) = (Application (Var s1) (Var s2))
+alphaReduceAll :: [String]->Term -> Term
+alphaReduceAll (s:strs) (Application t1 t2) = (Application t1 t2)
+alphaReduceAll (s:strs) (Abstraction s1 t1) = (alphaReduction s (Abstraction s1 (alphaReduceAll strs t1)))
+alphaReduceAll (s:strs) (Var s1) = (Var s1)
 
 replace :: Term->String->Term -> Term
 replace (Var s1) str trepl = if (str == s1) then trepl else (Var s1)
@@ -72,30 +61,31 @@ replace (Application t1 t2) str trepl = (Application (replace t1 str trepl) (rep
 
 betaReduction :: Term -> Term
 betaReduction term = case term of
-    (Application (Abstraction abstr t) appt) -> (replace (Abstraction abstr t) abstr appt)
-    (Application (Application t1 t2) appt) -> betaReduction (Application (betaReduction (Application t1 t2)) appt)
-    (Abstraction s t) -> (Abstraction s t)
     (Var s) -> (Var s)
+    (Application (Var v1) t) -> (Application (Var v1) t)
+    (Application (Abstraction abstr t) appt) -> (replace (Abstraction abstr t) abstr appt)
+    (Application (Application t1 t2) appt) -> (Application (betaReduction (Application t1 t2)) appt)
+    (Abstraction s t) -> (Abstraction s t)
+    --(Application t1 t2) -> (Application t1 t2)
+    --(Application (Application t1 t2) appt) -> (betaReduction (Application (betaReduction (Application t1 t2)) appt))
 
---alphaReduceAll (s:strs) (Application (Var s1) (Var s2)) = (Application (Var s1) (Var s2))
-alphaReduceAll :: [String]->Term -> Term
-alphaReduceAll (s:strs) (Application t1 t2) = (Application t1 t2)
-alphaReduceAll (s:strs) (Abstraction s1 t1) = (alphaReduction s (Abstraction s1 (alphaReduceAll strs t1)))
-alphaReduceAll (s:strs) (Var s1) = (Var s1)
+etaReduction :: Term -> Term
+etaReduction term = case term of 
+    (Abstraction str1 (Application t (Var str2))) -> if (str1 == str2 && (notElem str1 (freeVars t))) then t else (Abstraction str1 (Application t (Var str2)))
+    term -> term
 
 reduce :: Term -> Term
-reduce (Application t1 t2) = betaReduction (Application t1' t2)
+reduce (Var s) = (Var s)
+reduce (Application (Var v1) t) = (Application (Var v1) t) --na valw reduction 
+reduce (Application (Application t1 t2) t3) = (Application (Application t1 t2) t3)
+reduce (Abstraction s1 t1) = reduce (etaReduction (Abstraction s1 t1))
+reduce (Application t1 t2) = reduce (betaReduction (Application t1' t2))
     where
         t1' = (alphaReduceAll intrsct t1)
             where
                 intrsct = azList \\ varsInT
-                varsInT = (freeVars t2) ++ (boundVars t2) 
-reduce (Abstraction s1 t1) = (Abstraction s1 (reduce t1))
-reduce (Var s) = (Var s)
+                varsInT = (freeVars t2) ++ (boundVars t2)
 
-        --t2 = (alphaReduction (intrsct!!0) t) where
-        --    intrsct = azList \\ varsInT
-        --    varsInT = (freeVars t) ++ (boundVars t) 
 
 --------------------------------------- PARSER --------------------------------------------
 lambdaTerm :: Parser Term

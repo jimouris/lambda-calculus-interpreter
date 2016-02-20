@@ -196,3 +196,19 @@ ltrue = (\x -> (\y -> x))
 lfalse = (\x -> (\y -> y))
 
 iszero = (\n -> ((n (\x -> lfalse)) ltrue))
+
+
+----------------------------------random stuff-------------------------------------------
+mtrue = Abstraction "x" (Abstraction "y" (Var "x"))
+mfalse = Abstraction "x" (Abstraction "y" (Var "y"))
+
+mnot x = reduce (Application (Abstraction "z" (Application (Application (Var "z")mfalse) mtrue)) (x))
+
+
+mcond x n m = reduce (Application (Application (Application (Abstraction "z" (Abstraction "x" (Abstraction "y" (Application (Application (Var "z") (Var "x")) (Var "y"))))) x) n) m)
+
+mpair = Abstraction "x" (Abstraction "y" (Abstraction "z" (Application (Application (Var "z") (Var "x")) (Var "y"))))
+
+mfst mpair n m = reduce (Application (Abstraction "z" (Application (Var "z") mtrue))(Application (Application mpair n)m))
+
+msnd mpair n m = reduce (Application (Abstraction "z" (Application (Var "z") mfalse))(Application (Application mpair n)m))

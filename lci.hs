@@ -65,28 +65,43 @@ betaReduction term = case term of
     (Application (Application t1 t2) appt) -> (Application (betaReduction (Application t1 t2)) appt)
     (Abstraction s t) -> (Abstraction s t)
 
-step :: Term -> Term
-step (Var s) = (Var s)
-step (Application (Var v1) t) = (Application (Var v1) (step t))
-step (Application (Application t1 t2) t3) = (Application (betaReduction (Application t1' t2)) t3)
+step :: Term -> (Term, String)
+step (Var s) = ((Var s), "_")
+step (Application (Var v1) t) = ((Application (Var v1) (fst (step t))), snd (step t)) where
+step (Application (Application t1 t2) t3) = ((Application (betaReduction (Application t1' t2)) t3), "beta")
     where
         t1' = (alphaReduceAll intrsct t1)
             where
                 intrsct = azList \\ varsInT
                 varsInT = (freeVars t2) ++ (boundVars t2)
 step (Abstraction str1 t1) = case t1 of
-    (Application t2 (Var str2)) -> if (str1 == str2 && (notElem str1 (freeVars t2))) then t2 else (Abstraction str1 (step t1)) --eta Reduction
-    otherwise -> (Abstraction str1 (step t1))
-step (Application t1 t2) = (betaReduction (Application t1' t2))
+    (Application t2 (Var str2)) -> if (str1 == str2 && (notElem str1 (freeVars t2))) then (t2, "eta") else ((Abstraction str1 (fst (step t1))), snd (step t1)) --eta Reduction
+    otherwise -> ((Abstraction str1 (fst (step t1))), snd (step t1))
+step (Application t1 t2) = ((betaReduction (Application t1' t2)), "beta")
     where
         t1' = (alphaReduceAll intrsct t1)
             where
                 intrsct = azList \\ varsInT
                 varsInT = (freeVars t2) ++ (boundVars t2)
 
-reduce :: Term -> [String]
-reduce t1 = if (t1 == step t1) then [prettyprint t1] else [prettyprint t1]++(reduce t2) where 
+reduceNF :: Term -> [String]
+reduceNF t1 = if (t1 == fst (step t1)) then [prettyprint t1] else [prettyprint t1]++(reduceNF t2) where 
+    t2 = fst (step t1)
+
+reducesList :: Term -> [String]
+reducesList t1 = if (t1 == fst (step t1)) then ["_"] else [snd t2]++(reducesList (fst t2)) where 
     t2 = step t1
+
+reduceTuples :: Term -> ([Term], [String])
+reduceTuples t1 = if (t1 == fst (step t1)) then ([t1], ["_"]) else ([t1]++(fst (reduceTuples (fst t2))), [snd t2]++(snd (reduceTuples (fst t2)))) where 
+    t2 = step t1
+
+reduce :: Term -> Result
+reduce term = Res (reductions!!last) size reductions redexes where
+    reductions = fst (reduceTuples term)
+    redexes = snd (reduceTuples term)
+    size = length reductions
+    last = size-1
 
 --------------------------------------- PARSER --------------------------------------------
 lambdaTerm :: Parser Term

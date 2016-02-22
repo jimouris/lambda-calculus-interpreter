@@ -182,55 +182,51 @@ myterm = Application (Abstraction "x" ( Abstraction "y"  (Var "x"))) (Abstractio
 prettyPrinted = prettyprint myterm
 
 ------------------------------------- Church Numerals -------------------------------------
-church :: Integer -> String
-church 0 = "\\f.\\x.x"
-church 1 = "\\f.\\x.fx"
-church n = res!!size where
-    res = reduceNF (myparse ("\\f.\\x.f(("++(church (n-1))++")fx)"))
+church :: Integer -> Term
+church 0 = myparse "\\f.\\x.x"
+church 1 = myparse "\\f.\\x.fx"
+church n = myparse (res!!size) where
+    res = reduceNF (myparse ("\\f.\\x.f(("++(prettyprint (church (n-1)))++")fx)"))
     size = ((length res)-1)
 
 {- chSucc n = n+1 -}
-chSucc :: String -> String
-chSucc str = res!!size where 
-    res = reduceNF (myparse ("\\f.\\x.f(("++str++")fx)"))
+chSucc :: Term -> Term
+chSucc str = myparse (res!!size) where 
+    res = reduceNF (myparse ("\\f.\\x.f(("++(prettyprint str)++")fx)"))
     size = ((length res)-1)
 
 {- chPlus m n = m + n -}
-chPlus :: String -> String -> String
-chPlus str1 str2 = res!!size where 
-    res = reduceNF (myparse ("\\f.\\x.("++str1++")f(("++str2++")fx)"))
+chPlus :: Term -> Term -> Term
+chPlus str1 str2 = myparse (res!!size) where 
+    res = reduceNF (myparse ("\\f.\\x.("++(prettyprint str1)++")f(("++(prettyprint str2)++")fx)"))
     size = ((length res)-1)
 
 {- chMult m n = m * n -}
-chMult :: String -> String -> String
-chMult str1 str2 = res!!size where 
-    res = reduceNF (myparse ("\\f.("++str1++")(("++str2++")f)"))
+chMult :: Term -> Term -> Term
+chMult str1 str2 = myparse (res!!size) where 
+    res = reduceNF (myparse ("\\f.("++(prettyprint str1)++")(("++(prettyprint str2)++")f)"))
     size = ((length res)-1)
 
 {- chExp m n = m ^ n -}
-chExp :: String -> String -> String
-chExp str1 str2 = res!!size where 
-    res = reduceNF (myparse ("(("++str2++")("++str1++"))"))
+chExp :: Term -> Term -> Term
+chExp str1 str2 = myparse (res!!size) where 
+    res = reduceNF (myparse ("(("++(prettyprint str2)++")("++(prettyprint str1)++"))"))
     size = ((length res)-1)
 
---{- Booleans -}
---ltrue = (\x -> (\y -> x))
---lfalse = (\x -> (\y -> y))
+chIsZero :: Term -> Term
+chIsZero term = myparse (res!!size) where 
+    res = reduceNF (myparse ("("++(prettyprint term)++")(\\x.("++(prettyprint chFalse)++"))("++(prettyprint chTrue)++")"))
+    size = ((length res)-1)
 
---iszero = (\n -> ((n (\x -> lfalse)) ltrue))
+chTrue = Abstraction "x" (Abstraction "y" (Var "x"))
+chFalse = Abstraction "x" (Abstraction "y" (Var "y"))
 
+chNot x = reduceNF (Application (Abstraction "z" (Application (Application (Var "z")chFalse) chTrue)) (x))
 
-----------------------------------random stuff-------------------------------------------
-mtrue = Abstraction "x" (Abstraction "y" (Var "x"))
-mfalse = Abstraction "x" (Abstraction "y" (Var "y"))
-
-mnot x = reduce (Application (Abstraction "z" (Application (Application (Var "z")mfalse) mtrue)) (x))
-
-
-mcond x n m = reduce (Application (Application (Application (Abstraction "z" (Abstraction "x" (Abstraction "y" (Application (Application (Var "z") (Var "x")) (Var "y"))))) x) n) m)
+mcond x n m = reduceNF (Application (Application (Application (Abstraction "z" (Abstraction "x" (Abstraction "y" (Application (Application (Var "z") (Var "x")) (Var "y"))))) x) n) m)
 
 mpair = Abstraction "x" (Abstraction "y" (Abstraction "z" (Application (Application (Var "z") (Var "x")) (Var "y"))))
 
-mfst mpair n m = reduce (Application (Abstraction "z" (Application (Var "z") mtrue))(Application (Application mpair n)m))
+mfst mpair n m = reduceNF (Application (Abstraction "z" (Application (Var "z") chTrue))(Application (Application mpair n)m))
 
-msnd mpair n m = reduce (Application (Abstraction "z" (Application (Var "z") mfalse))(Application (Application mpair n)m))
+msnd mpair n m = reduceNF (Application (Abstraction "z" (Application (Var "z") chFalse))(Application (Application mpair n)m))

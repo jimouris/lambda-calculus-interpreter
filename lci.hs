@@ -88,6 +88,8 @@ reduceNF :: Term -> [String]
 reduceNF t1 = if (t1 == fst (step t1)) then [prettyprint t1] else [prettyprint t1]++(reduceNF t2) where 
     t2 = fst (step t1)
 
+printNF strs = mapM_ print (reduceNF (myparse(strs)))
+
 reducesList :: Term -> [String]
 reducesList t1 = if (t1 == fst (step t1)) then ["_"] else [snd t2]++(reducesList (fst t2)) where 
     t2 = step t1

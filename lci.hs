@@ -166,7 +166,8 @@ loopPrinter = do
     putStr "> "
     inputStr <- readLn 
     let parsedString = myparse inputStr  
-    putStrLn ("Normal form of " ++ inputStr ++ ": " ++ prettyprint parsedString)
+    putStrLn ("Normal form of " ++ inputStr ++ ": ")
+    putStrLn ((reduceNF parsedString)!!((length (reduceNF parsedString))-1))
     loopPrinter
 
 main :: IO ()

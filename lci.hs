@@ -201,13 +201,17 @@ chPlus str1 str2 = res!!size where
     res = reduceNF (myparse ("\\f.\\x.("++str1++")f(("++str2++")fx)"))
     size = ((length res)-1)
 
---{- lmult m n = m * n -}
---lmult :: String -> String -> String
---lmult = \m n f -> m (n f)
+{- chMult m n = m * n -}
+chMult :: String -> String -> String
+chMult str1 str2 = res!!size where 
+    res = reduceNF (myparse ("\\f.("++str1++")(("++str2++")f)"))
+    size = ((length res)-1)
 
---{- lexp m n = m ^ n -}
-----lexp :: String -> String -> String
---lexp = (\m -> (\n -> n m))
+{- chExp m n = m ^ n -}
+chExp :: String -> String -> String
+chExp str1 str2 = res!!size where 
+    res = reduceNF (myparse ("(("++str2++")("++str1++"))"))
+    size = ((length res)-1)
 
 --{- Booleans -}
 --ltrue = (\x -> (\y -> x))

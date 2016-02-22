@@ -195,11 +195,11 @@ chSucc str = res!!size where
     res = reduceNF (myparse ("\\f.\\x.f(("++str++")fx)"))
     size = ((length res)-1)
 
---{- chPlus m n = m + n -}
---chPlus :: String -> String -> String
---chPlus str1 str2 = res!!size where 
---    res = reduceNF (myparse ("(\\n.\\f.\\x.f(nfx))("++str++")"))
---    size = ((length res)-1)
+{- chPlus m n = m + n -}
+chPlus :: String -> String -> String
+chPlus str1 str2 = res!!size where 
+    res = reduceNF (myparse ("\\f.\\x.("++str1++")f(("++str2++")fx)"))
+    size = ((length res)-1)
 
 --{- lmult m n = m * n -}
 --lmult :: String -> String -> String

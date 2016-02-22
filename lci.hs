@@ -245,3 +245,13 @@ chSnd :: Term -> Term
 chSnd pair = myparse (res!!size) where 
     res = reduceNF (myparse ("("++(prettyprint pair)++")("++(prettyprint chFalse)++")"))
     size = ((length res)-1)
+
+chAnd :: Term->Term -> Term
+chAnd p q = myparse (res!!size) where 
+    res = reduceNF (myparse ("("++(prettyprint p)++")("++(prettyprint q)++")("++(prettyprint p)++")"))
+    size = ((length res)-1)
+
+chOr :: Term->Term -> Term
+chOr p q = myparse (res!!size) where 
+    res = reduceNF (myparse ("("++(prettyprint p)++")("++(prettyprint p)++")("++(prettyprint q)++")"))
+    size = ((length res)-1)

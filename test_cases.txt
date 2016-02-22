@@ -100,3 +100,12 @@ prettyprint (chFst (chPair (church 2) (church 1)))
 
 prettyprint (chSnd (chPair (church 2) (church 3)))
 "\\f.\\x.f(f(fx))"
+
+prettyprint (chAnd chTrue chTrue)
+"\\b.\\c.b"
+
+prettyprint (chAnd chFalse chTrue)
+"\\x.\\y.y"
+
+prettyprint (chOr chFalse  chTrue)
+"\\x.\\y.x"

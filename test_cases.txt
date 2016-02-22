@@ -50,7 +50,7 @@ reduce (myparse "(\\z.\\x.\\y.zxy)(\\x.\\y.x)er")
 "e"
 
 // if false then e else r
-reduce (myparse "(\\z.\\x.\\y.zxy)(\\x.\\y.x)er")
+reduce (myparse "(\\z.\\x.\\y.zxy)(\\x.\\y.y)er")
 "r"
 
 // fst (e, r)

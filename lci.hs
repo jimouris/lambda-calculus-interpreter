@@ -182,36 +182,38 @@ myterm = Application (Abstraction "x" ( Abstraction "y"  (Var "x"))) (Abstractio
 prettyPrinted = prettyprint myterm
 
 ------------------------------------- Church Numerals -------------------------------------
-type Church a = (a -> a) -> a -> a
+church :: Integer -> String
+church 0 = "\\f.\\x.x"
+church 1 = "\\f.\\x.fx"
+church n = res!!size where
+    res = reduceNF (myparse ("\\f.\\x.f(("++(church (n-1))++")fx)"))
+    size = ((length res)-1)
 
-church :: Integer -> Church Integer
-church 0 = \f -> \x -> x
-church n = \f -> \x -> f (church (n-1) f x)
+{- chSucc n = n+1 -}
+chSucc :: String -> String
+chSucc str = res!!size where 
+    res = reduceNF (myparse ("\\f.\\x.f(("++str++")fx)"))
+    size = ((length res)-1)
 
-unchurch :: Church Integer -> Integer
-unchurch cn = cn (+ 1) 0
+--{- chPlus m n = m + n -}
+--chPlus :: String -> String -> String
+--chPlus str1 str2 = res!!size where 
+--    res = reduceNF (myparse ("(\\n.\\f.\\x.f(nfx))("++str++")"))
+--    size = ((length res)-1)
 
-{- lsucc n = n + 1 -}
-lsucc :: Church Integer -> Church Integer
-lsucc = \n f x -> f (n f x)
+--{- lmult m n = m * n -}
+--lmult :: String -> String -> String
+--lmult = \m n f -> m (n f)
 
-{- lplus m n = m + n -}
-lplus :: Church Integer -> Church Integer -> Church Integer
-lplus = \m n f x -> m f (n f x)
+--{- lexp m n = m ^ n -}
+----lexp :: String -> String -> String
+--lexp = (\m -> (\n -> n m))
 
-{- lmult m n = m * n -}
-lmult :: Church Integer -> Church Integer -> Church Integer
-lmult = \m n f -> m (n f)
+--{- Booleans -}
+--ltrue = (\x -> (\y -> x))
+--lfalse = (\x -> (\y -> y))
 
-{- lexp m n = m ^ n -}
---lexp :: Church Integer -> Church Integer -> Church Integer
-lexp = (\m -> (\n -> n m))
-
-{- Booleans -}
-ltrue = (\x -> (\y -> x))
-lfalse = (\x -> (\y -> y))
-
-iszero = (\n -> ((n (\x -> lfalse)) ltrue))
+--iszero = (\n -> ((n (\x -> lfalse)) ltrue))
 
 
 ----------------------------------random stuff-------------------------------------------

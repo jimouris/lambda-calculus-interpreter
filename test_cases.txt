@@ -64,3 +64,39 @@ reduce (myparse "(\\z.z(\\x.\\y.y))((\\x.\\y.\\z.zxy)er)")
 // omega
 reduce (myparse "(\\x.xx)(\\x.xx)")
 "(\\x.xx)(\\x.xx)"
+
+prettyprint chTrue 
+"\\x.\\y.x"
+
+prettyprint (church 2)
+"\\f.\\x.f(fx)"
+
+prettyprint (chSucc (church 2))
+"\\f.\\x.f(f(fx))"
+
+prettyprint (chIsZero (church 0))
+"\\x.\\y.x"
+
+prettyprint (chIsZero (church 2))
+"\\x.\\y.y"
+
+prettyprint (chPlus (chSucc (church 2)) (church 3))
+"\\f.\\x.f(f(f(f(f(fx)))))"
+
+prettyprint (chMult (church 2) (church 3))
+"\\f.\\b.f(f(f(f(f(fb)))))"
+
+prettyprint (chExp (church 2) (church 3))
+"\\b.\\c.b(b(b(b(b(b(b(bc)))))))"
+
+prettyprint (chNot chFalse)
+"\\x.\\y.x"
+
+prettyprint (chCond chTrue (church 2) (church 10))
+"\\b.\\c.b(bc)"
+
+prettyprint (chFst (chPair (church 2) (church 1)))
+"\\b.\\c.b(bc)"
+
+prettyprint (chSnd (chPair (church 2) (church 3)))
+"\\f.\\x.f(f(fx))"

@@ -221,12 +221,27 @@ chIsZero term = myparse (res!!size) where
 chTrue = Abstraction "x" (Abstraction "y" (Var "x"))
 chFalse = Abstraction "x" (Abstraction "y" (Var "y"))
 
-chNot x = reduceNF (Application (Abstraction "z" (Application (Application (Var "z")chFalse) chTrue)) (x))
+chNot :: Term -> Term
+chNot term = myparse (res!!size) where 
+    res = reduceNF (myparse ("("++(prettyprint term)++")(("++(prettyprint chFalse)++"))("++(prettyprint chTrue)++")"))
+    size = ((length res)-1)
 
-mcond x n m = reduceNF (Application (Application (Application (Abstraction "z" (Abstraction "x" (Abstraction "y" (Application (Application (Var "z") (Var "x")) (Var "y"))))) x) n) m)
+chCond :: Term->Term->Term -> Term
+chCond cond x1 x2 = myparse (res!!size) where 
+    res = reduceNF (myparse ("("++(prettyprint cond)++")(("++(prettyprint x1)++"))("++(prettyprint x2)++")"))
+    size = ((length res)-1)
 
-mpair = Abstraction "x" (Abstraction "y" (Abstraction "z" (Application (Application (Var "z") (Var "x")) (Var "y"))))
+chPair :: Term->Term -> Term
+chPair x1 x2 = myparse (res!!size) where 
+    res = reduceNF (myparse ("(\\z.z("++(prettyprint x1)++")("++(prettyprint x2)++"))"))
+    size = ((length res)-1)
 
-mfst mpair n m = reduceNF (Application (Abstraction "z" (Application (Var "z") chTrue))(Application (Application mpair n)m))
+chFst :: Term -> Term
+chFst pair = myparse (res!!size) where 
+    res = reduceNF (myparse ("("++(prettyprint pair)++")("++(prettyprint chTrue)++")"))
+    size = ((length res)-1)
 
-msnd mpair n m = reduceNF (Application (Abstraction "z" (Application (Var "z") chFalse))(Application (Application mpair n)m))
+chSnd :: Term -> Term
+chSnd pair = myparse (res!!size) where 
+    res = reduceNF (myparse ("("++(prettyprint pair)++")("++(prettyprint chFalse)++")"))
+    size = ((length res)-1)

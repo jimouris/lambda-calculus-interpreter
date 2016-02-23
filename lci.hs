@@ -23,6 +23,11 @@ delete1 x [] = []
 delete1 x (y:xs) | (x == y) = (delete1 x xs)
                 | otherwise = (y:delete1 x xs)
 
+removeLast :: [String] -> [String]
+removeLast [] = []
+removeLast [last] = []
+removeLast (l:ls) = [l]++(removeLast ls)
+
 freeVars :: Term -> [String]
 freeVars t = case t of  Var s -> [s]
                         Application t1 t2 -> freeVars t1 ++ freeVars t2
@@ -99,7 +104,7 @@ reduceTuples t1 = if (t1 == fst (step t1)) then ([t1], ["_"]) else ([t1]++(fst (
     t2 = step t1
 
 reduce :: Term -> Result
-reduce term = Res (reductions!!last) size reductions redexes where
+reduce term = Res (reductions!!last) (size-1) reductions (removeLast redexes) where
     reductions = fst (reduceTuples term)
     redexes = snd (reduceTuples term)
     size = length reductions

@@ -73,7 +73,7 @@ betaReduction term = case term of
 step :: Term -> (Term, String)
 step (Var s) = ((Var s), "_")
 step (Application (Var v1) t) = ((Application (Var v1) (fst (step t))), snd (step t)) where
-step (Application (Application t1 t2) t3) = if (fst newtt == (Application (Application t1 t2) t3)) then ((Application (fst (step (Application t1 t2))) (fst (step t3))), "etas") else newtt
+step (Application (Application t1 t2) t3) = if (fst newtt == (Application (Application t1 t2) t3)) then ((Application (fst (step (Application t1 t2))) (fst (step t3))),  (snd (step (Application t1 t2)))++","++(snd (step t3))) else newtt
     where
         newtt = ((Application (betaReduction (Application t1' t2)) t3), "beta")
             where

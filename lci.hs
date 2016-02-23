@@ -73,12 +73,14 @@ betaReduction term = case term of
 step :: Term -> (Term, String)
 step (Var s) = ((Var s), "_")
 step (Application (Var v1) t) = ((Application (Var v1) (fst (step t))), snd (step t)) where
-step (Application (Application t1 t2) t3) = ((Application (betaReduction (Application t1' t2)) t3), "beta")
+step (Application (Application t1 t2) t3) = if (fst newtt == (Application (Application t1 t2) t3)) then ((Application (fst (step (Application t1 t2))) (fst (step t3))), "etas") else newtt
     where
-        t1' = (alphaReduceAll intrsct t1)
+        newtt = ((Application (betaReduction (Application t1' t2)) t3), "beta")
             where
-                intrsct = azList \\ varsInT
-                varsInT = (freeVars t2) ++ (boundVars t2)
+                t1' = (alphaReduceAll intrsct t1)
+                    where
+                        intrsct = azList \\ varsInT
+                        varsInT = (freeVars t2) ++ (boundVars t2)
 step (Abstraction str1 t1) = case t1 of
     (Application t2 (Var str2)) -> if (str1 == str2 && (notElem str1 (freeVars t2))) then (t2, "eta") else ((Abstraction str1 (fst (step t1))), snd (step t1)) --eta Reduction
     otherwise -> ((Abstraction str1 (fst (step t1))), snd (step t1))

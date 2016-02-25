@@ -23,11 +23,11 @@ reduce (myparse "\\x.zxx")
 "\\x.zxx"
 
 reduce (myparse "\\z.(\\f.\\x.fzx)(\\y.y)")
-"\\z.z"
+"\\y.y"
 
 // succ c0
 reduce (myparse "(\\n.\\f.\\x.nf(fx))(\\f.\\x.x)")
-\\f.f
+"\\b.b"
 
 // succ c1
 reduce (myparse "(\\n.\\f.\\x.nf(fx))(\\f.\\x.fx)")
@@ -39,7 +39,7 @@ reduce (myparse "(\\z.z(\\x.\\y.y)(\\x.\\y.x))(\\x.\\y.x)")
 
 // fst (true, false)
 reduce (myparse "(\\z.z(\\x.\\y.x))((\\x.\\y.\\z.zxy)(\\x.\\y.x)(\\x.\\y.y))")
-"\\x.\\y.x"
+"\\b.\\c.b"
 
 // snd (true, false)
 reduce (myparse "(\\z.z(\\x.\\y.y))((\\x.\\y.\\z.zxy)(\\x.\\y.x)(\\x.\\y.y))")

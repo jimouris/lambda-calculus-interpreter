@@ -1,6 +1,4 @@
-[![License MIT][badge-license]](LICENSE.txt)
-
-# λ-Calculus Interpreter
+# λ-Calculus Interpreter [![License MIT][badge-license]](LICENSE.txt)
 A simple lambda calculus interpreter
 
 ##2 Modes:
@@ -60,4 +58,4 @@ A simple lambda calculus interpreter
 
 2015-2016
 
-[badge-license]: https://img.shields.io/badge/license-MIT-green.svg
+[badge-license]: https://img.shields.io/badge/license-MIT-green.svg?style=flat-square

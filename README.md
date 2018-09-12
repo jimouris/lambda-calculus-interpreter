@@ -1,8 +1,8 @@
 # λ-Calculus Interpreter [![License MIT][badge-license]](LICENSE.txt)
 A simple lambda calculus interpreter
 
-##2 Modes:
-####1) Give lambda expressions:
+## 2 Modes:
+#### 1) Give lambda expressions:
 1. λ : \\
 2. e.g. "\\x.\\y.x"
 ```
@@ -15,7 +15,7 @@ A simple lambda calculus interpreter
 > reduceNF (myparse "(\\n.\\f.\\x.nf(fx))(\\f.\\x.fx)")
 ["(\\n.\\f.\\x.nf(fx))(\\f.\\x.fx)", "\\b.\\c.(\\f.\\x.fx)b(bc)", "\\b.\\c.(\\c.bc)(bc)", "\\b.\\c.b(bc)"]
 ```
-####2) Give fixed terms (true, false, chuch 2, etc):
+#### 2) Give fixed terms (true, false, chuch 2, etc):
 1. true       : chTrue
 2. false      : chFalse
 3. ifthenelse : chCond
@@ -57,5 +57,6 @@ A simple lambda calculus interpreter
 ```
 
 2015-2016
+
 
 [badge-license]: https://img.shields.io/badge/license-MIT-green.svg?style=flat-square
